@@ -2,6 +2,7 @@ package ru.netology.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.netology.repository.AlreadyExistsException;
 import ru.netology.repository.NotFoundException;
 import ru.netology.repository.Repository;
 
@@ -35,6 +36,23 @@ public class ProductRepositoryTest {
     public void shouldRemoveByIdNotFound() {
         assertThrows(NotFoundException.class, () -> {
             repository.removeById(6);
+        });
+    }
+
+    @Test
+    public void shouldAddById() {
+        Product five = new Product(5, "TV", 1400);
+        repository.save(five);
+        Product[] actual = repository.findAll();
+        Product[] expected = new Product[]{first, second, third, fourth,five};
+        assertArrayEquals(actual, expected);
+    }
+
+    @Test
+    public void shouldAddByIdAlreadyExists() {
+        Product five = new Product(3, "TV", 1400);
+        assertThrows(AlreadyExistsException.class, () -> {
+            repository.save(five);
         });
     }
 }
